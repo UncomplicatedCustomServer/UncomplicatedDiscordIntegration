@@ -54,6 +54,9 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\..\..\Desktop\EXILED_REF\References\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\UncomplicatedCustomRoles\UncomplicatedCustomRoles\bin\x64\Debug\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="Mirror">
       <HintPath>..\..\..\..\Desktop\EXILED_REF\References\Mirror.dll</HintPath>
     </Reference>
@@ -79,14 +82,18 @@
     <Compile Include="API\Configs\Bot.cs" />
     <Compile Include="API\Configs\ChannelConfig.cs" />
     <Compile Include="API\Configs\EventsToLog.cs" />
-    <Compile Include="API\Features\LogMessage.cs" />
     <Compile Include="API\Features\Watchlist.cs" />
+    <Compile Include="API\Features\LogMessage.cs" />
+    <Compile Include="API\Features\WatchlistEntry.cs" />
+    <Compile Include="API\Struct\Triplet.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="DiscordBot.cs" />
     <Compile Include="Enums\ChannelType.cs" />
     <Compile Include="Events\MapHandler.cs" />
     <Compile Include="Events\PlayerHandler.cs" />
     <Compile Include="Events\ServerHandler.cs" />
+    <Compile Include="Manager\NET\HttpManager.cs" />
+    <Compile Include="Manager\NET\WatchlistManager.cs" />
     <Compile Include="Patches\ClientCommandLogging.cs" />
     <Compile Include="Patches\CommandLogging.cs" />
     <Compile Include="Patches\ErrorLoggingPatch.cs" />
@@ -95,12 +102,13 @@
     <Compile Include="Translation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="EXILEDOFFICIAL">
-      <Version>8.11.0</Version>
+    <PackageReference Include="EXILED-OFFICIAL">
+      <Version>8.12.2</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

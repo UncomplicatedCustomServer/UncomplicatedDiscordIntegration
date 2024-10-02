@@ -11,6 +11,6 @@ namespace UncomplicatedCustomDiscordIntegration.API.Features
 
         public string Time { get; } = DateTimeOffset.Now.ToLocalTime().ToString();
 
-        public override string ToString() => $"[{Time}] {Log}";
+        public override string ToString() => $"[{Time}] [{ChannelType}] {Log}";
     }
 }

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using UncomplicatedCustomDiscordIntegration.API.Features;
 using UncomplicatedDiscordIntegration.Events;
+using UncomplicatedCustomDiscordIntegration.Manager.NET;
+using System.Threading.Tasks;
 
 namespace UncomplicatedCustomDiscordIntegration
 {
@@ -35,6 +37,8 @@ namespace UncomplicatedCustomDiscordIntegration
 
         private Harmony harmony;
 
+        internal HttpManager httpManager;
+
         private readonly List<LogMessage> queue = [];
 
         public override void OnEnabled()
@@ -42,12 +46,34 @@ namespace UncomplicatedCustomDiscordIntegration
             Instance = this;
             queue.Clear();
 
+            httpManager = new("udi");
+
+            Log.Info("==================================================");
+            Log.Info(" Thanks for using UncomplicatedDiscordIntegration");
+            Log.Info("         by FoxWorn3365 & UCS Collective");
+            Log.Info("===========================================");
+            Log.Info(">> Join our discord: https://discord.gg/5StRGu8EJV <<");
+
+
+            if (httpManager.LatestVersion.CompareTo(Version) > 0)
+                Log.Warn($"You are NOT using the latest version of UncomplicatedDiscordIntegration!\nCurrent: v{Version} | Latest available: v{httpManager.LatestVersion}\nDownload it from GitHub: https://github.com/UncomplicatedCustomServer/UncomplicatedDiscordIntegration/releases/latest");
+            else if (httpManager.LatestVersion.CompareTo(Version) < 0)
+            {
+                Log.Info($"You are using an EXPERIMENTAL or PRE-RELEASE version of UncomplicatedDiscordIntegration!\nLatest stable release: {httpManager.LatestVersion}\nWe do not assure that this version won't make your SCP:SL server crash! - Debug log has been enabled!");
+                if (!Log.DebugEnabled.Contains(Assembly))
+                {
+                    Config.Debug = true;
+                    Log.DebugEnabled.Add(Assembly);
+                }
+            }
+
             if (Config.Bot.Token == string.Empty)
                 Log.Error("Failed to start the bot!\nThe given token is not valid!");
             else
-                bot = new(Config.Bot.Token);
+                Task.Run(() => bot = new(Config.Bot.Token));
 
             Watchlist.Init();
+            WatchlistManager.Init();
 
             harmony = new($"ucs.ucdi-{DateTime.Now.Ticks}");
             harmony.PatchAll();

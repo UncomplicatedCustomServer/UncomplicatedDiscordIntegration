@@ -17,6 +17,6 @@ namespace UncomplicatedDiscordIntegration.API.Configs
         public bool ShouldUseEmbeds { get; set; } = false;
 
         [Description("Choose how many log entries can be held inside the same message to avoid Discord ratelimit")]
-        public int BucketSize { get; set; } = 10;
+        public int BucketSize { get; set; } = 25;
     }
 }

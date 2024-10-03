@@ -70,5 +70,21 @@ namespace UncomplicatedCustomDiscordIntegration.API.Features
             entry = null;
             return false;
         }
+
+        public static bool TryCreateFromOffline(Player author, string target, string reason, out WatchlistEntry? entry)
+        {
+            string targetNameAndAvatar = WatchlistManager.Sync(Plugin.Instance.httpManager.TryGetNickname(target.Replace("@steam", "")));
+            //string targetName = "Pizzacat100";
+
+            if (targetNameAndAvatar != string.Empty && targetNameAndAvatar is not null)
+            {
+                string[] targets = targetNameAndAvatar.Split('@');
+                entry = new(author.Nickname, author.UserId, targets[0], target.Contains("@steam") ? target : $"{target}@steam", DateTimeOffset.Now.ToUnixTimeSeconds(), reason, targets[1]);
+                return true;
+            }
+
+            entry = null;
+            return false;
+        }
     }
 }

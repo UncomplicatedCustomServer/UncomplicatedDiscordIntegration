@@ -5,15 +5,19 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Scp079;
 using Exiled.Events.EventArgs.Scp106;
 using Exiled.Events.EventArgs.Scp914;
+using Exiled.Permissions.Extensions;
 using PlayerRoles;
 using System;
+using System.Linq;
 using UncomplicatedCustomDiscordIntegration;
 using UncomplicatedCustomDiscordIntegration.API.Features;
 using UncomplicatedCustomDiscordIntegration.Enums;
+using UncomplicatedCustomDiscordIntegration.Manager.NET;
 
 namespace UncomplicatedDiscordIntegration.Events
 {
@@ -239,9 +243,13 @@ namespace UncomplicatedDiscordIntegration.Events
         {
             if (Plugin.Instance.Config.UseWatchlist)
             {
-                if (Watchlist.Users.TryGetValue(ev.Player.UserId, out string reason))
-                    if (!string.IsNullOrEmpty(reason))
-                        Plugin.Instance.HandleLogMessage(new(ChannelType.Watchlist, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, ev.Player.IPAddress, reason)));
+                WatchlistEntry entry = WatchlistManager.GetSync(ev.Player.UserId);
+                if (entry is not null)
+                {
+                    Plugin.Instance.HandleLogMessage(new(ChannelType.Watchlist, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, entry.Reason)));
+                    foreach (Player player in Player.List.Where(p => p.CheckPermission("udi.broadcast") || p.RemoteAdminAccess))
+                        player.Broadcast(7, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, entry.Reason));
+                }
             }
 
             if (Plugin.Instance.Config.EventsToLog.PlayerJoined && (!ev.Player.DoNotTrack || !Plugin.Instance.Config.ShouldRespectDoNotTrack))

@@ -139,6 +139,14 @@ namespace UncomplicatedCustomDiscordIntegration.Manager.NET
             return true;
         }
 
+        public static WatchlistEntry? GetSync(string steamId)
+        {
+            Task<WatchlistEntry?> task = Task.Run(() => Get(steamId));
+            task.Wait();
+
+            return task.Result;
+        }
+
 #nullable disable
         public static T Sync<T>(Task<T> task)
         {

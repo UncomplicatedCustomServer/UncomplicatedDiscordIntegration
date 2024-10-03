@@ -222,10 +222,6 @@ namespace UncomplicatedCustomDiscordIntegration
 
         public string DedicatedServer { get; set; } = "Dedicated server";
 
-        public string WatchlistedUserJoined { get; set; } = "Watchlisted user {0} ({1}) [{2}] has joined the server.\nWatchlist Reason: {3}";
-
-        public string WatchlistAddDescription { get; set; } = "Adds a user to the watchlist.";
-
-        public string WatchlistRemoveDescription { get; set; } = "Removes a user from the watchlist.";
+        public string WatchlistedUserJoined { get; set; } = "Watchlisted user {0} ({1}) has joined the server.\nWatchlist Reason: {2}";
     }
 }

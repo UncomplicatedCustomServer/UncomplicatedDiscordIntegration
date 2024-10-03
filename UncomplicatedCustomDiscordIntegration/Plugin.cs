@@ -27,7 +27,7 @@ namespace UncomplicatedCustomDiscordIntegration
 
         internal static Plugin Instance;
 
-        private DiscordBot bot;
+        internal DiscordBot bot;
 
         private MapHandler mapHandler;
 
@@ -72,7 +72,6 @@ namespace UncomplicatedCustomDiscordIntegration
             else
                 Task.Run(() => bot = new(Config.Bot.Token));
 
-            Watchlist.Init();
             WatchlistManager.Init();
 
             harmony = new($"ucs.ucdi-{DateTime.Now.Ticks}");
@@ -93,15 +92,6 @@ namespace UncomplicatedCustomDiscordIntegration
 
         internal void HandleLogMessage(LogMessage message)
         {
-            if (queue.Count > 0 && bot.channels.Count == 7)
-                foreach (LogMessage msg in queue)
-                    HandleLogMessage(msg);
-                
-            if (bot.channels.Count < 7)
-            {
-                queue.Add(message);
-                return;
-            }
 
             bot.AddMessageToQueue(message);
         }

@@ -1,5 +1,4 @@
 ﻿using Exiled.API.Features;
-using Newtonsoft.Json;
 using SimpleDiscord;
 using SimpleDiscord.Components;
 using SimpleDiscord.Components.Builders;
@@ -12,17 +11,18 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UncomplicatedCustomDiscordIntegration.API.Features;
+using UncomplicatedCustomDiscordIntegration.Extensions;
 using UncomplicatedCustomDiscordIntegration.Manager.NET;
 
 namespace UncomplicatedCustomDiscordIntegration
 {
     internal class DiscordBot
     {
-        private readonly Client client;
+        internal readonly Client client;
 
         internal readonly Dictionary<Enums.ChannelType, GuildTextChannel> channels = [];
 
-        private readonly Dictionary<Enums.ChannelType, List<LogMessage>> logEntriesQueue = [];
+        private readonly Dictionary<GuildTextChannel, List<LogMessage>> logEntriesQueue = [];
 
         private readonly long Start;
 
@@ -96,25 +96,25 @@ namespace UncomplicatedCustomDiscordIntegration
             }
 
             channels.Add(Enums.ChannelType.Command, Guild.GetChannel(Plugin.Instance.Config.Channels.Commands) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.Command, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.Command], []);
 
             channels.Add(Enums.ChannelType.GameEvents, Guild.GetChannel(Plugin.Instance.Config.Channels.GameEvents) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.GameEvents, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.GameEvents], []);
 
             channels.Add(Enums.ChannelType.StaffCopy, Guild.GetChannel(Plugin.Instance.Config.Channels.StaffChannel) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.StaffCopy, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.StaffCopy], []);
 
             channels.Add(Enums.ChannelType.Watchlist, Guild.GetChannel(Plugin.Instance.Config.Channels.Watchlist) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.Watchlist, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.Watchlist], []);
 
             channels.Add(Enums.ChannelType.Bans, Guild.GetChannel(Plugin.Instance.Config.Channels.Bans) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.Bans, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.Bans], []);
 
             channels.Add(Enums.ChannelType.Errors, Guild.GetChannel(Plugin.Instance.Config.Channels.Errors) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.Errors, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.Errors], []);
 
             channels.Add(Enums.ChannelType.Reports, Guild.GetChannel(Plugin.Instance.Config.Channels.Reports) as GuildTextChannel);
-            logEntriesQueue.Add(Enums.ChannelType.Reports, []);
+            logEntriesQueue.TryAdd(channels[Enums.ChannelType.Reports], []);
 
             Exiled.API.Features.Log.Warn("ALMOST SUCCESSFULLY SENT START MESSAGE!");
 
@@ -267,36 +267,63 @@ namespace UncomplicatedCustomDiscordIntegration
 
         public void AddMessageToQueue(LogMessage message)
         {
-            List<LogMessage> instance = logEntriesQueue[message.ChannelType];
-
-            string content = string.Join("\n", instance);
-
-            if ($"{content}\n{message}".Length > 1995)
-            {
-                // We have to send messages, clear the queue and reset it
-                channels[message.ChannelType].SendMessage(MessageBuilder.New().SetContent(content));
-                logEntriesQueue[message.ChannelType].Clear();
-                logEntriesQueue[message.ChannelType].Add(message);
+            if (logEntriesQueue.Count < 7)
                 return;
-            }
 
-            if (instance.Count >= Plugin.Instance.Config.Bot.BucketSize)
+            Exiled.API.Features.Log.Info($"Added message {message.Log} to the queue!");
+
+            try
             {
-                channels[message.ChannelType].SendMessage(MessageBuilder.New().SetContent(content));
-                logEntriesQueue[message.ChannelType].Clear();
-                logEntriesQueue[message.ChannelType].Add(message);
-                return;
+                GuildTextChannel channel = channels[message.ChannelType];
+                List<LogMessage> instance = logEntriesQueue[channel];
+                Exiled.API.Features.Log.Info($"Entries for {message.ChannelType} are {logEntriesQueue[channel].Count}");
+
+                string content = string.Join("\n", instance);
+
+                if ($"{content}\n{message}".Length > 1995)
+                {
+                    // We have to send messages, clear the queue and reset it
+                    channel.SendMessage(MessageBuilder.New().SetContent(content));
+                    logEntriesQueue[channel].Clear();
+                    logEntriesQueue[channel].Add(message);
+                    return;
+                }
+
+                if (instance.Count >= Plugin.Instance.Config.Bot.BucketSize)
+                {
+                    channel.SendMessage(MessageBuilder.New().SetContent(content));
+                    logEntriesQueue[channel].Clear();
+                    logEntriesQueue[channel].Add(message);
+                    return;
+                }
+
+                // Add
+                logEntriesQueue[channel].Add(message);
+
+                if (logEntriesQueue.Count >= Plugin.Instance.Config.Bot.BucketSize)
+                {
+                    channel.SendMessage(MessageBuilder.New().SetContent($"{content}\n{message}"));
+                    logEntriesQueue[channel].Clear();
+                    return;
+                }
             }
-
-            // Add
-            logEntriesQueue[message.ChannelType].Add(message);
-
-            if (logEntriesQueue.Count >= Plugin.Instance.Config.Bot.BucketSize)
+            catch (Exception e)
             {
-                channels[message.ChannelType].SendMessage(MessageBuilder.New().SetContent($"{content}\n{message}"));
-                logEntriesQueue[message.ChannelType].Clear();
-                return;
+                Exiled.API.Features.Log.Error(e.ToString());
             }
+        }
+
+        internal void WatchlistUserJoined(WatchlistEntry entry)
+        {
+            channels[Enums.ChannelType.Watchlist].SendMessage(MessageBuilder.New().SetContent("").AddEmbed(EmbedBuilder.New()
+                .SetTitle($"Watchlisted user {entry.Target} joined the server!")
+                .SetDescription("")
+                .AddField("User", $"`{entry.Target}` `{entry.TargetId}`")
+                .AddField("Author", $"`{entry.Author}` `{entry.AuthorId}`")
+                .AddField("Time", $"<t:{entry.Time}:F>")
+                .AddField("Reason", entry.Reason)
+                .SetThumbnail(entry?.AvatarUrl ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1024px-Steam_icon_logo.svg.png")
+            ));
         }
 
         private static EmbedBuilder GenerateList(WatchlistEntry[] entries, EmbedBuilder embed, out List<SelectOption> options, int page = 0)
@@ -377,14 +404,12 @@ namespace UncomplicatedCustomDiscordIntegration
 
         public async void HandleUserInfo(Interaction interaction, string steamid)
         {
+            steamid = steamid.Contains("@steam") ? steamid : $"{steamid}@steam";
+
             await interaction.AcknowledgeWithLoading(false);
             
             try
             {
-                client.Logger.Warn($"Got components:\n{interaction.Message?.Components?.Count}");
-                if (interaction.Message is not null && interaction.Message.Components is not null)
-                    await interaction.Message.Edit(MessageBuilder.New().SetContent("").SetEmbeds([.. interaction.Message.Embeds]).AddComponent(new(new(interaction.Message.Components[0]))));
-
                 WatchlistEntry? entry = await WatchlistManager.Get(steamid);
 
                 if (entry is null)
@@ -430,8 +455,6 @@ namespace UncomplicatedCustomDiscordIntegration
                 await Task.Delay(1500);
             }
         }
-
-        public async Task SendMessage(GuildTextChannel channel, SocketSendMessage message) => await channel.SendMessage(message);
 
         internal void Close() => client.Disconnect();
     }

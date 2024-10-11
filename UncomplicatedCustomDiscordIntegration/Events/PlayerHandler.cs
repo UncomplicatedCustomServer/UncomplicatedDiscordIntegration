@@ -14,10 +14,10 @@ using Exiled.Permissions.Extensions;
 using PlayerRoles;
 using System;
 using System.Linq;
-using UncomplicatedCustomDiscordIntegration;
-using UncomplicatedCustomDiscordIntegration.API.Features;
-using UncomplicatedCustomDiscordIntegration.Enums;
-using UncomplicatedCustomDiscordIntegration.Manager.NET;
+using UncomplicatedDiscordIntegration;
+using UncomplicatedDiscordIntegration.API.Features;
+using UncomplicatedDiscordIntegration.Enums;
+using UncomplicatedDiscordIntegration.Manager.NET;
 
 namespace UncomplicatedDiscordIntegration.Events
 {

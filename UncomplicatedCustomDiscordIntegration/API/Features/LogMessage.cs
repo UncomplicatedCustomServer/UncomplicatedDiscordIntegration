@@ -1,7 +1,7 @@
 ﻿using System;
-using UncomplicatedCustomDiscordIntegration.Enums;
+using UncomplicatedDiscordIntegration.Enums;
 
-namespace UncomplicatedCustomDiscordIntegration.API.Features
+namespace UncomplicatedDiscordIntegration.API.Features
 {
     internal class LogMessage(ChannelType channel, string log)
     {

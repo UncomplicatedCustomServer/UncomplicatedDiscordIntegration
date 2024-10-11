@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using SimpleDiscord.Components;
 using System;
-using UncomplicatedCustomDiscordIntegration.Manager.NET;
+using UncomplicatedDiscordIntegration.Manager.NET;
 
-namespace UncomplicatedCustomDiscordIntegration.API.Features
+namespace UncomplicatedDiscordIntegration.API.Features
 {
 #nullable enable
     internal class WatchlistEntry

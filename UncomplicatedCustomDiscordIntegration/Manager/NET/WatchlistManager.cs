@@ -9,10 +9,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using UncomplicatedCustomDiscordIntegration.API.Features;
+using UncomplicatedDiscordIntegration.API.Features;
 using static UnityEngine.GraphicsBuffer;
 
-namespace UncomplicatedCustomDiscordIntegration.Manager.NET
+namespace UncomplicatedDiscordIntegration.Manager.NET
 {
     internal class WatchlistManager
     {

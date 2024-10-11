@@ -5,8 +5,8 @@ using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Scp914;
 using Exiled.Events.EventArgs.Warhead;
 using System.Linq;
-using UncomplicatedCustomDiscordIntegration;
-using UncomplicatedCustomDiscordIntegration.Enums;
+using UncomplicatedDiscordIntegration;
+using UncomplicatedDiscordIntegration.Enums;
 
 namespace UncomplicatedDiscordIntegration.Events
 {

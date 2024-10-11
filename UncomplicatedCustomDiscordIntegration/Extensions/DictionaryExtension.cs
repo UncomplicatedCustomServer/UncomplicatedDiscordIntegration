@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UncomplicatedCustomDiscordIntegration.Extensions
+namespace UncomplicatedDiscordIntegration.Extensions
 {
     public static class DictionaryExtension
     {

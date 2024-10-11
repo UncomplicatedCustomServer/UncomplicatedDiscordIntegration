@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace UncomplicatedCustomDiscordIntegration.API.Struct
+namespace UncomplicatedDiscordIntegration.API.Struct
 {
     public readonly struct Triplet<TFirst, TSecond, TThird>
     {

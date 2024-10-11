@@ -2,10 +2,9 @@
 using Exiled.API.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
-using UncomplicatedCustomDiscordIntegration.API.Configs;
 using UncomplicatedDiscordIntegration.API.Configs;
 
-namespace UncomplicatedCustomDiscordIntegration
+namespace UncomplicatedDiscordIntegration
 {
     internal class Config : IConfig
     {

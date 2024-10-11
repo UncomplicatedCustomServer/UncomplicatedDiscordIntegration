@@ -10,10 +10,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using UncomplicatedCustomDiscordIntegration.API.Struct;
+using UncomplicatedDiscordIntegration.API.Struct;
 using PlayerHandler = Exiled.Events.Handlers.Player;
 
-namespace UncomplicatedCustomDiscordIntegration.Manager.NET
+namespace UncomplicatedDiscordIntegration.Manager.NET
 {
 #pragma warning disable IDE1006
 

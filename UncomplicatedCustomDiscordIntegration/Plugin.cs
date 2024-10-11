@@ -4,18 +4,18 @@ using Handlers = Exiled.Events.Handlers;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using UncomplicatedCustomDiscordIntegration.API.Features;
+using UncomplicatedDiscordIntegration.API.Features;
 using UncomplicatedDiscordIntegration.Events;
-using UncomplicatedCustomDiscordIntegration.Manager.NET;
+using UncomplicatedDiscordIntegration.Manager.NET;
 using System.Threading.Tasks;
 
-namespace UncomplicatedCustomDiscordIntegration
+namespace UncomplicatedDiscordIntegration
 {
     internal class Plugin : Plugin<Config, Translation>
     {
-        public override string Name => "UncomplicatedCustomDiscordIntegration";
+        public override string Name => "UncomplicatedDiscordIntegration";
 
-        public override string Prefix => "UncomplicatedCustomDiscordIntegration";
+        public override string Prefix => "UncomplicatedDiscordIntegration";
 
         public override string Author => "FoxWorn3365 & UCS Collective";
 
@@ -90,11 +90,7 @@ namespace UncomplicatedCustomDiscordIntegration
             base.OnDisabled();
         }
 
-        internal void HandleLogMessage(LogMessage message)
-        {
-
-            bot.AddMessageToQueue(message);
-        }
+        internal void HandleLogMessage(LogMessage message) => bot.AddMessageToQueue(message);
 
         private void RegisterEvents()
         {

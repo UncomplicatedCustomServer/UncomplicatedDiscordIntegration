@@ -7,10 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UncomplicatedCustomDiscordIntegration.API.Features;
-using UncomplicatedCustomDiscordIntegration.Manager.NET;
+using UncomplicatedDiscordIntegration.API.Features;
+using UncomplicatedDiscordIntegration.Manager.NET;
 
-namespace UncomplicatedCustomDiscordIntegration.Commands
+namespace UncomplicatedDiscordIntegration.Commands
 {
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     internal class Watchlist : ParentCommand

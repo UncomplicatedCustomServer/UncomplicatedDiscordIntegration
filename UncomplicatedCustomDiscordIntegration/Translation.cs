@@ -1,6 +1,6 @@
 ﻿using Exiled.API.Interfaces;
 
-namespace UncomplicatedCustomDiscordIntegration
+namespace UncomplicatedDiscordIntegration
 {
     public sealed class Translation : ITranslation
     {

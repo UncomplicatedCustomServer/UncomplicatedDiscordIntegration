@@ -1,4 +1,4 @@
-﻿namespace UncomplicatedCustomDiscordIntegration.API.Configs
+﻿namespace UncomplicatedDiscordIntegration.API.Configs
 {
     public sealed class ChannelConfig
     {

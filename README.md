@@ -8,7 +8,7 @@
 > [SimpleDiscord](https://github.com/UncomplicatedCustomServer/SimpleDiscord) >= `1.0.0` is **required**!
 
 ## What's UncomplicatedDiscordIntegration?
-**UncomplicatedDiscordIntegration**, also known as **UDI** is a remake of the plugin [DiscordIntegration](https://github.com/ExMod-Team/DiscordIntegration) created by **Joker**.\
+**UncomplicatedDiscordIntegration**, also known as **UDI** is a remake of the plugin [DiscordIntegration](https://github.com/ExMod-Team/DiscordIntegration) created by **Joker**.
 
 ## Features
 - **Log everything to your Discord server**\
@@ -28,4 +28,8 @@ Check out the wiki page for the installation process: [WIKI PAGE](https://github
 ## Need more support?
 You can join our [official Discord server](https://discord.gg/dpvHzC5mst)!
 
-<h5>**UncomplicatedDiscordIntegration** is a project of the **UncomplicatedCustomServer Collective** released under the **GNU AGPL v3.0** license</h5>
+## Found it useful?
+Feel free to contribute with a donation through our [OpenCollective Page](https://opencollective.com/ucs)!\
+You'll unlock also cool channels, roles and news!
+
+<h5><ins>UncomplicatedDiscordIntegration</ins> is a project of the <ins>UncomplicatedCustomServer Collective<ins> released under the GNU AGPL v3.0 license</h5>

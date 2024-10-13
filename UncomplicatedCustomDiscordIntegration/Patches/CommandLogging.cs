@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System;
-using UncomplicatedCustomDiscordIntegration.Enums;
+using UncomplicatedDiscordIntegration.Enums;
 
 using static HarmonyLib.AccessTools;
 
-namespace UncomplicatedCustomDiscordIntegration.Patches
+namespace UncomplicatedDiscordIntegration.Patches
 {
     [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
     internal class CommandLogging

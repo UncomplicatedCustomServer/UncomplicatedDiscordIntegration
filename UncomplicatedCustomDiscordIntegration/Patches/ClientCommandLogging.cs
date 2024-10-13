@@ -1,8 +1,8 @@
 using RemoteAdmin;
 using Exiled.API.Features;
 using HarmonyLib;
-using UncomplicatedCustomDiscordIntegration;
-using UncomplicatedCustomDiscordIntegration.Enums;
+using UncomplicatedDiscordIntegration;
+using UncomplicatedDiscordIntegration.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
@@ -10,7 +10,7 @@ using System;
 
 using static HarmonyLib.AccessTools;
 
-namespace UncomplicatedCustomDiscordIntegration.Patches
+namespace UncomplicatedDiscordIntegration.Patches
 {
     [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
     internal class ClientCommandLogging

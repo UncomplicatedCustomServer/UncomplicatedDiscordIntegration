@@ -16,7 +16,13 @@ namespace UncomplicatedDiscordIntegration.API.Configs
         [Description("If true every log will be sent inside an embed")]
         public bool ShouldUseEmbeds { get; set; } = false;
 
+        [Description("If true and a bucket don't get filled with log entries in 7 seconds then a partial one will be sent instead")]
+        public bool BucketTimer { get; set; } = false;
+
         [Description("Choose how many log entries can be held inside the same message to avoid Discord ratelimit")]
-        public int BucketSize { get; set; } = 10;
+        public int BucketSize { get; set; } = 25;
+
+        [Description("Insert the webhook url for the error logger")]
+        public string ErrorWebhookUrl { get; set; } = string.Empty;
     }
 }

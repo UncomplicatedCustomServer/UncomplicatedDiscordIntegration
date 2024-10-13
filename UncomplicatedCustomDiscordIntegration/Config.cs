@@ -2,10 +2,9 @@
 using Exiled.API.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
-using UncomplicatedCustomDiscordIntegration.API.Configs;
 using UncomplicatedDiscordIntegration.API.Configs;
 
-namespace UncomplicatedCustomDiscordIntegration
+namespace UncomplicatedDiscordIntegration
 {
     internal class Config : IConfig
     {
@@ -116,5 +115,11 @@ namespace UncomplicatedCustomDiscordIntegration
         /// </summary>
         [Description("Indicates whether the player watchlist feature can be used.")]
         public bool UseWatchlist { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets the Watchlist Database Id for FoxBase
+        /// </summary>
+        [Description("The key of the online database that handle the watchlist - please DO NOT TOUCH IT IF YOU DO NOT KNOW WHAT ARE YOU DOING!")]
+        public string UCDInternalWatchlistIdAccess { get; set; } = string.Empty;
     }
 }

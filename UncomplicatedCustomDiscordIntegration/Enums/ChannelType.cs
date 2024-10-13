@@ -1,4 +1,4 @@
-﻿namespace UncomplicatedCustomDiscordIntegration.Enums
+﻿namespace UncomplicatedDiscordIntegration.Enums
 {
     public enum ChannelType
     {

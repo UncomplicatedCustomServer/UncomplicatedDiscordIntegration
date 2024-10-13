@@ -19,7 +19,7 @@ namespace UncomplicatedDiscordIntegration
 
         public override string Author => "FoxWorn3365 & UCS Collective";
 
-        public override Version Version => new(1, 0, 0);
+        public override Version Version => new(1, 0, 1);
 
         public override Version RequiredExiledVersion => new(8, 11, 0);
 

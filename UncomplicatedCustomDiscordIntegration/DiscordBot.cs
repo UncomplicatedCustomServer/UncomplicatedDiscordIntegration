@@ -263,6 +263,11 @@ namespace UncomplicatedDiscordIntegration
             {
                 if (channels.TryGetValue(message.ChannelType, out GuildTextChannel channel) && logEntriesQueue.TryGetValue(channel.Id, out List<LogMessage> instance))
                 {
+                    if (channel is null)
+                        return;
+
+                    instance ??= [];
+
                     string content = string.Join("\n", instance);
 
                     if ($"{content}\n{message}".Length > 1995)

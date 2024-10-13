@@ -32,12 +32,11 @@ namespace UncomplicatedDiscordIntegration.Patches
 
         private static void LogError(string message)
         {
-            Plugin.Instance.HandleLogMessage(new(ChannelType.Errors, message));
-            /*if (Plugin.Instance.Config.LogErrors)
+            if (Plugin.Instance.Config.LogErrors)
                 if (Plugin.Instance.Config.Bot.ErrorWebhookUrl is not null && Plugin.Instance.Config.Bot.ErrorWebhookUrl != string.Empty)
                     Plugin.Instance.bot.client.SendWebhook(Plugin.Instance.Config.Bot.ErrorWebhookUrl, MessageBuilder.New().SetContent("").AddEmbed(EmbedBuilder.New().SetTitle("Error").SetDescription($"```\n{message.Substring(0, 1990)}\n```").SetColor("#d1372c")));
                 else
-                    Plugin.Instance.HandleLogMessage(new(ChannelType.Errors, message));*/
+                    Plugin.Instance.HandleLogMessage(new(ChannelType.Errors, message));
         }
     }
 }

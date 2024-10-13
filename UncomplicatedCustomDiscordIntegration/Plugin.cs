@@ -19,7 +19,7 @@ namespace UncomplicatedDiscordIntegration
 
         public override string Author => "FoxWorn3365 & UCS Collective";
 
-        public override Version Version => new(0, 9, 0);
+        public override Version Version => new(1, 0, 0);
 
         public override Version RequiredExiledVersion => new(8, 11, 0);
 
@@ -74,7 +74,7 @@ namespace UncomplicatedDiscordIntegration
 
             WatchlistManager.Init();
 
-            harmony = new($"ucs.ucdi-{DateTime.Now.Ticks}");
+            harmony = new($"ucs.udi-{DateTime.Now.Ticks}");
             harmony.PatchAll();
 
             RegisterEvents();
@@ -87,6 +87,7 @@ namespace UncomplicatedDiscordIntegration
 
             bot.Close();
 
+            UnregisterEvents();
             base.OnDisabled();
         }
 
@@ -147,6 +148,60 @@ namespace UncomplicatedDiscordIntegration
             Handlers.Player.ChangingGroup += playerHandler.OnChangingGroup;
             Handlers.Player.ChangingItem += playerHandler.OnChangingItem;
             Handlers.Scp914.Activating += playerHandler.OnActivatingScp914;
+        }
+
+        private void UnregisterEvents()
+        {
+            Handlers.Map.Decontaminating -= mapHandler.OnDecontaminating;
+            Handlers.Warhead.Starting -= mapHandler.OnStartingWarhead;
+            Handlers.Warhead.Stopping -= mapHandler.OnStoppingWarhead;
+            Handlers.Warhead.Detonated -= mapHandler.OnWarheadDetonated;
+
+            Handlers.Server.WaitingForPlayers -= serverHandler.OnWaitingForPlayers;
+            Handlers.Server.RoundStarted -= serverHandler.OnRoundStarted;
+            Handlers.Server.RoundEnded -= serverHandler.OnRoundEnded;
+            Handlers.Server.RespawningTeam -= serverHandler.OnRespawningTeam;
+            Handlers.Server.ReportingCheater -= serverHandler.OnReportingCheater;
+            Handlers.Server.LocalReporting -= serverHandler.OnLocalReporting;
+
+            Handlers.Scp914.ChangingKnobSetting -= playerHandler.OnChangingScp914KnobSetting;
+            Handlers.Player.UsedItem -= playerHandler.OnUsedMedicalItem;
+            Handlers.Scp079.InteractingTesla -= playerHandler.OnInteractingTesla;
+            Handlers.Player.PickingUpItem -= playerHandler.OnPickingUpItem;
+            Handlers.Player.ActivatingGenerator -= playerHandler.OnInsertingGeneratorTablet;
+            Handlers.Player.StoppingGenerator -= playerHandler.OnEjectingGeneratorTablet;
+            Handlers.Player.UnlockingGenerator -= playerHandler.OnUnlockingGenerator;
+            Handlers.Player.OpeningGenerator -= playerHandler.OnOpeningGenerator;
+            Handlers.Player.ClosingGenerator -= playerHandler.OnClosingGenerator;
+            Handlers.Scp079.GainingLevel -= playerHandler.OnGainingLevel;
+            Handlers.Scp079.GainingExperience -= playerHandler.OnGainingExperience;
+            Handlers.Player.EscapingPocketDimension -= playerHandler.OnEscapingPocketDimension;
+            Handlers.Player.EnteringPocketDimension -= playerHandler.OnEnteringPocketDimension;
+            Handlers.Player.ActivatingWarheadPanel -= playerHandler.OnActivatingWarheadPanel;
+            Handlers.Player.TriggeringTesla -= playerHandler.OnTriggeringTesla;
+            Handlers.Player.Hurting -= playerHandler.OnHurting;
+            Handlers.Player.Dying -= playerHandler.OnDying;
+            Handlers.Player.Kicked -= playerHandler.OnKicked;
+            Handlers.Player.Banned -= playerHandler.OnBanned;
+            Handlers.Player.InteractingDoor -= playerHandler.OnInteractingDoor;
+            Handlers.Player.InteractingElevator -= playerHandler.OnInteractingElevator;
+            Handlers.Player.InteractingLocker -= playerHandler.OnInteractingLocker;
+            Handlers.Player.IntercomSpeaking -= playerHandler.OnIntercomSpeaking;
+            Handlers.Player.Handcuffing -= playerHandler.OnHandcuffing;
+            Handlers.Player.RemovingHandcuffs -= playerHandler.OnRemovingHandcuffs;
+            Handlers.Scp106.Teleporting -= playerHandler.OnTeleporting;
+            Handlers.Player.ReloadingWeapon -= playerHandler.OnReloadingWeapon;
+            Handlers.Player.DroppingItem -= playerHandler.OnItemDropped;
+            Handlers.Player.Verified -= playerHandler.OnVerified;
+            Handlers.Player.Destroying -= playerHandler.OnDestroying;
+            Handlers.Player.ChangingRole -= playerHandler.OnChangingRole;
+            Handlers.Player.ChangingGroup -= playerHandler.OnChangingGroup;
+            Handlers.Player.ChangingItem -= playerHandler.OnChangingItem;
+            Handlers.Scp914.Activating -= playerHandler.OnActivatingScp914;
+
+            playerHandler = null;
+            mapHandler = null;
+            serverHandler = null;
         }
     }
 }

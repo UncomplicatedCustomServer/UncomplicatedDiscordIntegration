@@ -9,6 +9,7 @@ using SimpleDiscord.Gateway;
 using SimpleDiscord.Logger;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UncomplicatedDiscordIntegration.API.Features;
 using UncomplicatedDiscordIntegration.Extensions;
@@ -23,6 +24,10 @@ namespace UncomplicatedDiscordIntegration
         internal readonly Dictionary<Enums.ChannelType, GuildTextChannel> channels = [];
 
         private readonly Dictionary<long, List<LogMessage>> logEntriesQueue = [];
+
+        private readonly Dictionary<long, long> lastSent = [];
+
+        private readonly static int messageDelay = 7;
 
         private readonly long Start;
 
@@ -64,6 +69,10 @@ namespace UncomplicatedDiscordIntegration
                 client.EventHandler.RegisterEvents(this);
                 client.LoginAsync(token, intents);
                 Start = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+                if (Plugin.Instance.Config.Bot.BucketTimer)
+                    EmptyBucket();
+
             } 
             catch (Exception e)
             {
@@ -94,24 +103,31 @@ namespace UncomplicatedDiscordIntegration
 
             channels.Add(Enums.ChannelType.Command, Guild.GetChannel(Plugin.Instance.Config.Channels.Commands) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.Command].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.Command].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             channels.Add(Enums.ChannelType.GameEvents, Guild.GetChannel(Plugin.Instance.Config.Channels.GameEvents) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.GameEvents].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.GameEvents].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             channels.Add(Enums.ChannelType.StaffCopy, Guild.GetChannel(Plugin.Instance.Config.Channels.StaffChannel) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.StaffCopy].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.StaffCopy].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             channels.Add(Enums.ChannelType.Watchlist, Guild.GetChannel(Plugin.Instance.Config.Channels.Watchlist) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.Watchlist].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.Watchlist].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             channels.Add(Enums.ChannelType.Bans, Guild.GetChannel(Plugin.Instance.Config.Channels.Bans) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.Bans].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.Bans].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             channels.Add(Enums.ChannelType.Errors, Guild.GetChannel(Plugin.Instance.Config.Channels.Errors) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.Errors].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.Errors].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             channels.Add(Enums.ChannelType.Reports, Guild.GetChannel(Plugin.Instance.Config.Channels.Reports) as GuildTextChannel);
             logEntriesQueue.TryAdd(channels[Enums.ChannelType.Reports].Id, []);
+            lastSent.TryAdd(channels[Enums.ChannelType.Reports].Id, DateTimeOffset.Now.ToUnixTimeSeconds());
 
             await channels[Enums.ChannelType.GameEvents].SendMessage(MessageBuilder.New().SetContent("").AddEmbed(EmbedBuilder.New().SetTitle("Server successfully started!").SetColor("#63c930").SetDescription("")));
             client.RegisterCommand(ApplicationCommandBuilder.New("players", "Shows every connected player"));
@@ -273,7 +289,7 @@ namespace UncomplicatedDiscordIntegration
                     if ($"{content}\n{message}".Length > 1995)
                     {
                         // We have to send messages, clear the queue and reset it
-                        channel.SendMessage(MessageBuilder.New().SetContent(content));
+                        SendMessage(channel, content);
                         logEntriesQueue[channel.Id].Clear();
                         logEntriesQueue[channel.Id].Add(message);
                         return;
@@ -281,7 +297,7 @@ namespace UncomplicatedDiscordIntegration
 
                     if (instance.Count >= Plugin.Instance.Config.Bot.BucketSize)
                     {
-                        channel.SendMessage(MessageBuilder.New().SetContent(content));
+                        SendMessage(channel, content);
                         logEntriesQueue[channel.Id].Clear();
                         logEntriesQueue[channel.Id].Add(message);
                         return;
@@ -292,7 +308,7 @@ namespace UncomplicatedDiscordIntegration
 
                     if (logEntriesQueue.Count >= Plugin.Instance.Config.Bot.BucketSize)
                     {
-                        channel.SendMessage(MessageBuilder.New().SetContent($"{content}\n{message}"));
+                        SendMessage(channel, $"{content}\n{message}");
                         logEntriesQueue[channel.Id].Clear();
                         return;
                     }
@@ -303,6 +319,33 @@ namespace UncomplicatedDiscordIntegration
             catch (Exception e)
             {
                 Exiled.API.Features.Log.Error(e.ToString());
+            }
+        }
+
+        private void SendMessage(GuildTextChannel channel, string message, bool? embed = null)
+        {
+            embed ??= Plugin.Instance.Config.Bot.ShouldUseEmbeds;
+
+            MessageBuilder builder = MessageBuilder.New();
+            
+            builder = (bool)embed ? builder.SetContent("").AddEmbed(EmbedBuilder.New().SetTitle("").SetDescription(message)) : builder.SetContent(message);
+
+            lastSent[channel.Id] = DateTimeOffset.Now.ToUnixTimeSeconds();
+            channel.SendMessage(builder);
+        }
+
+        private async void EmptyBucket()
+        {
+            while (true)
+            {
+                long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+                foreach (KeyValuePair<long, List<LogMessage>> kvp in logEntriesQueue.Where(kvp => now - lastSent[kvp.Key] > messageDelay))
+                {
+                    SendMessage(channels.FirstOrDefault(c => c.Value.Id == kvp.Key).Value, string.Join("\n", kvp.Value));
+                    logEntriesQueue[kvp.Key].Clear();
+                }
+
+                await Task.Delay(1000);
             }
         }
 

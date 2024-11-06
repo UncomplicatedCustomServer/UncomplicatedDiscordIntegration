@@ -15,7 +15,7 @@ namespace UncomplicatedDiscordIntegration.Manager.NET
     {
         public static HttpClient HttpClient => Plugin.Instance.httpManager.HttpClient;
 
-        public readonly static string Endpoint = "https://ucs.fcosma.it/api/foxbase/v1";
+        public readonly static string Endpoint = "https://api.ucserver.it/foxbase/v1";
 
         public static bool CanProceed => Plugin.Instance.Config.UCDInternalWatchlistIdAccess is not null && Plugin.Instance.Config.UCDInternalWatchlistIdAccess != string.Empty;
 

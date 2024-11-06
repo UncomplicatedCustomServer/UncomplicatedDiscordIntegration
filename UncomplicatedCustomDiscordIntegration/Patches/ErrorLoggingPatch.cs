@@ -6,7 +6,6 @@ using Exiled.API.Features;
 using static HarmonyLib.AccessTools;
 using UncomplicatedDiscordIntegration.Enums;
 using SimpleDiscord.Components.Builders;
-using SimpleDiscord.Components;
 
 namespace UncomplicatedDiscordIntegration.Patches
 {

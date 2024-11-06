@@ -14,6 +14,7 @@ using Exiled.Permissions.Extensions;
 using PlayerRoles;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using UncomplicatedDiscordIntegration;
 using UncomplicatedDiscordIntegration.API.Features;
 using UncomplicatedDiscordIntegration.Enums;
@@ -241,16 +242,19 @@ namespace UncomplicatedDiscordIntegration.Events
 
         public void OnVerified(VerifiedEventArgs ev)
         {
-            if (Plugin.Instance.Config.UseWatchlist)
+            Task.Run(delegate
             {
-                WatchlistEntry entry = WatchlistManager.GetSync(ev.Player.UserId);
-                if (entry is not null)
+                if (Plugin.Instance.Config.UseWatchlist)
                 {
-                    Plugin.Instance.HandleLogMessage(new(ChannelType.Watchlist, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, entry.Reason)));
-                    foreach (Player player in Player.List.Where(p => p.CheckPermission("udi.broadcast") || p.RemoteAdminAccess))
-                        player.Broadcast(7, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, entry.Reason));
+                    WatchlistEntry entry = WatchlistManager.GetSync(ev.Player.UserId);
+                    if (entry is not null)
+                    {
+                        Plugin.Instance.HandleLogMessage(new(ChannelType.Watchlist, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, entry.Reason)));
+                        foreach (Player player in Player.List.Where(p => p.CheckPermission("udi.broadcast") || p.RemoteAdminAccess))
+                            player.Broadcast(7, string.Format(Plugin.Instance.Translation.WatchlistedUserJoined, ev.Player.Nickname, ev.Player.UserId, entry.Reason));
+                    }
                 }
-            }
+            });
 
             if (Plugin.Instance.Config.EventsToLog.PlayerJoined && (!ev.Player.DoNotTrack || !Plugin.Instance.Config.ShouldRespectDoNotTrack))
                 Plugin.Instance.HandleLogMessage(new(ChannelType.GameEvents, string.Format(Plugin.Instance.Translation.HasJoinedTheGame, ev.Player.Nickname, Plugin.Instance.Config.ShouldLogUserIds ? ev.Player.UserId : Plugin.Instance.Translation.Redacted, Plugin.Instance.Config.ShouldLogIPAddresses ? ev.Player.IPAddress : Plugin.Instance.Translation.Redacted)));

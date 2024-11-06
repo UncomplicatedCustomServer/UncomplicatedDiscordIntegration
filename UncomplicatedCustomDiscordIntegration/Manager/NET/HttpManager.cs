@@ -32,7 +32,7 @@ namespace UncomplicatedDiscordIntegration.Manager.NET
         /// <summary>
         /// Gets the UCS APIs endpoint
         /// </summary>
-        public string Endpoint { get; } = "https://ucs.fcosma.it/api/v2";
+        public string Endpoint { get; } = "https://api.ucserver.it/v2";
 
         /// <summary>
         /// Gets the CreditTag storage for the plugin, downloaded from our central server
@@ -160,7 +160,7 @@ namespace UncomplicatedDiscordIntegration.Manager.NET
             Credits = [];
             try
             {
-                Dictionary<string, Dictionary<string, string>> Data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(RetriveString(HttpGetRequest("https://ucs.fcosma.it/api/credits.json")));
+                Dictionary<string, Dictionary<string, string>> Data = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(RetriveString(HttpGetRequest($"{Endpoint}/credits.json")));
 
                 foreach (KeyValuePair<string, Dictionary<string, string>> kvp in Data.Where(kvp => kvp.Value.ContainsKey("role") && kvp.Value.ContainsKey("color") && kvp.Value.ContainsKey("override")))
                 {
@@ -229,7 +229,7 @@ namespace UncomplicatedDiscordIntegration.Manager.NET
 
         public async Task<string> TryGetNickname(string steamid)
         {
-            return await HttpClient.GetStringAsync($"https://ucs.fcosma.it/api/steam/nickname?id={steamid}");
+            return await HttpClient.GetStringAsync($"{Endpoint}/steam/nickname?id={steamid}");
         }
     }
 }

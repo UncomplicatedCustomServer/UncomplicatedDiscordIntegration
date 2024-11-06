@@ -2,7 +2,6 @@ using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 using Exiled.Events.EventArgs.Server;
 using Respawning;
-using UncomplicatedDiscordIntegration;
 using UncomplicatedDiscordIntegration.Enums;
 
 namespace UncomplicatedDiscordIntegration.Events
